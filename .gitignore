@@ -1,0 +1,16 @@
+# downloaded hardware data (docs/DATA.md)
+/data/
+# large intermediate outputs of the runners
+/det2/
+/ibmstab/
+/miamirep/
+/models/
+# arrays
+*.npz
+*.npy
+# python
+__pycache__/
+*.pyc
+# logs and editor files
+*.log
+.DS_Store

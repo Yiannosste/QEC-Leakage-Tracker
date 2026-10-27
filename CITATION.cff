@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software or its results, please cite it as below and cite the data sets listed in docs/DATA.md."
+title: "QEC-Leakage-Tracker: a label-free leakage tracker for surface-code decoding"
+type: software
+version: 0.1.0
+date-released: 2026-10-26
+license: MIT
+repository-code: "https://github.com/Yiannosste/QEC-Leakage-Tracker"
+url: "https://github.com/Yiannosste/QEC-Leakage-Tracker"
+authors:
+  - family-names: "Stergiou"
+    given-names: "Ioannis"
+    affiliation: "School of Electrical and Computer Engineering, National Technical University of Athens, Greece"
+abstract: >-
+  A hidden Markov model per data qubit that reads only surface-code syndromes and estimates, per shot and per
+  round, how likely each data qubit is to be leaked (or in a long-lived state that scrambles its neighbouring
+  checks). The estimates become soft edge weights for minimum-weight perfect matching. The parameters are
+  fitted label-free by Baum-Welch on the device's own syndromes. The repository holds the simulation studies,
+  a pre-registered positive result on IBM ibm_berlin stability data, three real-data null results, and the
+  cases where the tracker fails.
+keywords:
+  - quantum error correction
+  - surface code
+  - leakage
+  - hidden Markov model
+  - minimum-weight perfect matching

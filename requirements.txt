@@ -1,0 +1,9 @@
+numpy>=1.26
+scipy>=1.11
+stim>=1.13
+pymatching>=2.2
+matplotlib>=3.8
+pandas>=2.1
+torch>=2.1          # CNN tracker only (CPU is enough)
+beliefmatching      # belief-matching baseline only
+qiskit>=1.0         # only to unpickle the ibm_miami circuits
