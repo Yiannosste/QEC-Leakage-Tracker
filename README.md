@@ -1,6 +1,6 @@
 # QEC-Leakage-Tracker
 
-This is the code and the full record of my project C3: a leakage tracker for surface-code decoding that
+This is the code and the full record of my project: a leakage tracker for surface-code decoding that
 needs no labels. A small hidden Markov model per data qubit reads only the syndrome (the detection events)
 and estimates, for every shot and every round, the probability that the qubit is leaked, or in any other
 long-lived state that scrambles the checks around it. These probabilities become per-shot soft edge weights
