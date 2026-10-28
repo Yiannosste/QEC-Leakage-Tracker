@@ -1,6 +1,6 @@
 # IBM ibm_berlin real-data test of syndrome-only hidden-state tracking (project C3)
 
-*21 Oct 2026. Data: Zenodo 23335425 (Lange et al., arXiv:2610.03869), `ibm_berlin.zip`, surface-code memory, 100 000 shots per run. Protocol frozen before decoding: ibm_protocol.md (v1 original, v2 adds amendment 1). Every number below was computed in this session from the files listed at the end.*
+*21 Oct 2026. Data: Zenodo 23335425 (Lange et al., arXiv:2610.03869), `ibm_berlin.zip`, surface-code memory, 100 000 shots per run. Protocol frozen before decoding: ibm_protocol.md (v1 original, v2 adds amendment 1). Every number below was computed from the files listed at the end.*
 
 ## 1. Verdict
 

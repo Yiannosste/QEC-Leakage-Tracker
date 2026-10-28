@@ -8,8 +8,7 @@ This is the method as I fixed it for all experiments (facts.md F1). Code: `code/
 ## The problem
 
 A surface-code experiment gives, per shot, a syndrome: one bit per detector, which compares a stabiliser
-outcome with its previous value. When a data qubit leaves the computational space (leaks) it stays leaked for
-several rounds and randomises every stabiliser that touches it. The matching decoder does not know this. The
+outcome with its previous value. When a data qubit leaves the computational space (leaks) it stays leaked for several rounds and scrambles every stabiliser that touches it (in the model: each adjacent check outcome is flipped with probability ρ = 1/2 per round). The matching decoder does not know this. The
 tracker's job is to infer, from the syndrome alone, how likely each data qubit is to be leaked in each round,
 and to pass that to the decoder.
 
@@ -17,8 +16,7 @@ and to pass that to the decoder.
 
 I use Stim's rotated surface-code memory (`surface_code:rotated_memory_z`) with SI1000 noise of strength p.
 Each data qubit leaks with probability p_L per round, stays leaked for a geometric time with mean τ rounds,
-randomises each adjacent stabiliser outcome with probability ρ = 1/2 while leaked, gets a random Pauli on
-return, and flips its final readout with probability ρ if it is leaked at the end. On real data I use the same
+flips each adjacent stabiliser outcome with probability ρ = 1/2 per round while leaked, gets a Pauli drawn uniformly from X, Y, Z on return, and flips its final readout with probability ρ if it is leaked at the end. On real data I use the same
 model as a description of "a long-lived state that scrambles neighbouring checks". Syndromes alone cannot say
 whether that state is leakage or a defect.
 
@@ -28,13 +26,12 @@ One hidden Markov model per data qubit. The hidden state of qubit q at round t h
 L ∈ {0, 1} and one measurement-flip bit for each neighbouring check (both bases, up to four checks). The flip
 bits let the model explain away an ordinary measurement error, whose two-round detector pattern looks like a
 one-round leak. Transitions: L goes 0→1 with probability p_L (per qubit) and 1→0 with probability p_ret
-(global). The flip bits are drawn each round from the exact, undecomposed detector error model of the circuit.
+(global). The flip bits are drawn each round from the given, undecomposed detector error model: the exact circuit model in simulation, the authors' shipped p_ij model on hardware.
 
 ## Emission
 
 The observation at round t is the set of detection events of the neighbouring checks. Given the hidden state,
-each detector fires with a probability from the detector error model (the background), XOR the flip bit, and,
-if L = 1, randomised with probability ρ. Forward-backward then gives π(q, t) = P(L = 1 | all detection events
+each detector fires with a probability from the detector error model (the background), XOR the flip bit, and, if L = 1, flipped with probability ρ. Forward-backward then gives π(q, t) = P(L = 1 | all detection events
 of the shot) and the posterior of a return at t. The "lag 2" variants only see rounds up to t + 2 (online).
 The frozen tracker ALL uses the whole record (offline smoothing).
 
@@ -50,7 +47,7 @@ p_L (per qubit) and p_ret (global) are fitted by Baum-Welch on calibration shots
 Start: p_L = 3e-3, p_ret = 0.25. 12 iterations, ρ fixed at 1/2. The E-step uses the same mean-field inference
 as decoding. I report the fitted log-likelihood minus the log-likelihood of the same model with p_L → 0 as the
 evidence, in nats per shot. In detect2 the learned p_L was 1.1 to 1.4e-3 for a true 1.0e-3, and p_ret 0.15
-to 0.18 for a true 0.125. On leak-free data the fit does not go to zero; see facts.md F6. And on leak-free shots sampled from the ibm_berlin shipped model the evidence is still 50 to 60 % of the real value (facts.md F9), so I only read it next to that null, never on its own.
+to 0.18 for a true 0.125. On leak-free data the fit does not go to zero; see facts.md F6. And on leak-free shots sampled from the ibm_berlin shipped model the evidence is still 50 to 60 % of the real value (facts.md F5), so I only read it next to that null, never on its own.
 
 ## Decoding rule
 
@@ -73,5 +70,4 @@ about 15 min per T = 100 ibm_berlin stability run, calibration plus tracking, on
 
 ## What is not in the method
 
-No IQ (analog readout) data, no leakage removal unit, no training labels, no per-device tuning. Every setting
-above was fixed in `protocols/detect2_protocol.md` and reused unchanged on the IBM data.
+No IQ (analog readout) data, no leakage removal unit, no training labels, no hand tuning. The only per-run adaptation is the Baum-Welch fit of p_L per qubit and p_ret on that run's own calibration shots. Every other setting above was fixed in `protocols/detect2_protocol.md` and reused unchanged on the IBM data.

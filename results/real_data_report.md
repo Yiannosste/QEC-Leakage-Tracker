@@ -182,7 +182,7 @@ Two observations. (i) The flag rate on hardware equals the flag rate on the fitt
 | simulated test set | 20 000 shots per experiment, seed = 7000 + hash of name | small; its f intervals are wide (+/- 0.4) |
 | circuit adapter | `leakage_sim_real.py`: round boundary = non-final `M`; sweep-controlled `CX` skipped in adjacency; chip (row, col) coordinates mapped to the (d+1)^2 lattice | minimal changes; the injection/XOR machinery is inherited unchanged |
 
-## 8. What the Willow 2025 dataset would need (not downloaded; 5.7 GB per the task brief; project notes record Zenodo 13273331 as four zips totalling 112 GB)
+## 8. What the Willow 2025 dataset would need (not downloaded; 5.7 GB; project notes record Zenodo 13273331 as four zips totalling 112 GB)
 
 The 2025 "below threshold" experiments differ in exactly the ways that matter here, so a scope test on them would need:
 
@@ -192,14 +192,14 @@ The 2025 "below threshold" experiments differ in exactly the ways that matter he
 4. **Compute**: the d = 7 circuits have 48 measure qubits and 25+ rounds; CNN training and per-shot soft decoding scale roughly 2x over d = 5, so about 2 CPU-hours per experiment on this machine or a larger host; a d = 3 subset (if the zip members can be pulled individually with HTTP range requests, as the project notes indicate for zenodo.org) would fit the current budget.
 5. **Positive control**: Willow also contains runs *without* DQLR (reported in the paper's supplement); those, if present in the public release, are the proper place to look for a gain.
 
-## 9. Deviations from the task brief
+## 9. Deviations from the plan for this analysis
 
 - CNN trackers were trained **per (distance, basis, lag)** on a mixture of the fitted simulators of the patches, not per experiment (8 trainings instead of 20), to fit the time and memory budget; the HMM is per experiment as specified.
-- HMM was run at lag 0 only (the brief lists "D-HMM soft" without a lag); CNN at lag 0 and 2 as specified.
-- The simulated test set is 20 000 shots per experiment (the brief did not fix a number); its oracle-fraction intervals are wide.
-- The A4 control uses the fitted model's mean leaked fraction (as the brief says, "average leakage probability"); no other static variants were run.
-- The Willow DQLR scope-null test was **not** run (download not allowed by the brief); Section 8 lists what it needs.
-- A sandbox restart killed four background training jobs once; they were re-run from scratch with the same seeds, and the per-shot result files were checkpointed so no decoder result was recomputed twice.
+- HMM was run at lag 0 only (the plan listed "D-HMM soft" without a lag); CNN at lag 0 and 2 as specified.
+- The simulated test set is 20 000 shots per experiment (the plan did not fix a number); its oracle-fraction intervals are wide.
+- The A4 control uses the fitted model's mean leaked fraction (the pre-registration calls it the "average leakage probability"); no other static variants were run.
+- The Willow DQLR scope-null test was **not** run (the 5.7 GB download was out of scope at the time); Section 8 lists what it needs.
+- Four CNN trainings were interrupted once and re-run from scratch with the same seeds; the per-shot result files were checkpointed, so no decoder result was recomputed twice.
 
 ## 10. Files
 

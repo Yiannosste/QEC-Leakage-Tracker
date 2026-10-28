@@ -1,6 +1,6 @@
 # QEC-Leakage-Tracker
 
-This is the code and the full record of my project: a leakage tracker for surface-code decoding that
+This is the code and the full record of my project C3: a leakage tracker for surface-code decoding that
 needs no labels. A small hidden Markov model per data qubit reads only the syndrome (the detection events)
 and estimates, for every shot and every round, the probability that the qubit is leaked, or in any other
 long-lived state that scrambles the checks around it. These probabilities become per-shot soft edge weights
@@ -32,15 +32,18 @@ endpoint a chance of about 0.25.
 - The gain grows with run length (α = 0). Change in logical failure probability, X against A:
   −0.5 % [−1.8, +0.7] at T = 5, −0.6 % [−2.2, +1.0] at T = 10, −5.8 % [−7.6, −3.9] at T = 20,
   −15 % at T = 50, −20 % at T = 100 (P_fail 0.0228 → 0.0182).
-- The tracker switches itself off when the rotated readout buries the signal. For α ≥ 0.8 the fitted
-  evidence is about 0 nats per shot and X equals A within 2 shots per run.
+- When the rotated readout buries the signal the fit returns near-zero leakage and decoding falls back to
+  MWPM: for α ≥ 0.8 the fitted evidence is about 0 nats per shot and X equals A within 2 shots per run.
+  It is the same chip, so the hidden state is presumably still there.
 - The label-free evidence (1.0 to 8.2 nats per shot at α = 0) is not proof on its own. The same fit on
   leak-free shots sampled from each run's shipped noise model still gives 0.5 to 5.0 nats (50 to 60 %
   of the real value). What differs is the fitted episode length: 2 to 4 rounds on null data, 30 to 110
-  rounds on the real α ≤ 0.6 runs (facts.md F9, `results/ibmstab/null_evidence_summary.md`).
+  rounds on the real α ≤ 0.6 runs (facts.md F5, `results/ibmstab/null_evidence_summary.md`).
 - That gap does not track the decoding gain: at T = 100, α = 0.6 the evidence is below its null and the
   tracker still cuts failures by 6.4 %. My plain MWPM matches the MWPM numbers Lange et al. report on all
-  17 runs, so the baseline is fine (facts.md F10, `results/ibmstab/mwpm_vs_lange.md`).
+  17 runs, so A is the same baseline they used, same model and same decoder (facts.md F5,
+  `results/ibmstab/mwpm_vs_lange.md`). Whether a model that matches the observed detection fractions would
+  change the gain is an open post hoc check.
 - My older per-detector tracker (X_old) makes these runs worse: +13 % to +15 % failures at T = 5 and 10.
 
 ![IBM stability result](figures/ibmstab_figure.png)
@@ -62,8 +65,10 @@ I then built a guarded version, v3, on synthetic data only, with the selection r
 rule written down first. The confirmation on new seeds failed rule 1: reset leak-free d = 3 memory,
 88 / 121, p = 0.027, that is +3.4 % failures. So by my own rule v3 was not run on the ibm_miami data.
 
-My reading: stability experiments fail mostly through long-lived states, so the tracker helps there and
-is safe. Memory experiments have a smaller oracle gain that a few false alarms cancel.
+My reading, scoped to what was tested: in the one synthetic stability circuit with two long-lived hot qubits
+the logical failures come mostly from those states, so the tracker has much to gain and little to lose; on
+ibm_berlin it removes at most 20 % of failures. In the memory scenarios the oracle gain is small (4 to 26 %)
+and a few false alarms cancel it.
 
 ## Install
 
@@ -84,6 +89,14 @@ directory. `code/README.md` gives the matching `PYTHONPATH` if you import the mo
 No hardware data are in the repository. `docs/DATA.md` lists each Zenodo record, the file to download and
 where to put it under `data/` (or under `$LT_DATA`). Simulations need no download.
 
+## How this was made
+
+The analysis code, the experiments and the drafts of every document in this repository (and of the paper)
+were produced with an AI assistant (Claude, Anthropic) under my direction. I set the questions, the protocols
+and the rules, read the outputs, and checked the numbers that are quoted. I am responsible for the content.
+The files in `docs/working_notes/` are working notes from that process, kept for the record;
+`results/facts.md` supersedes them wherever they differ.
+
 ## Reproduce
 
 | facts.md section | what | command | output |
@@ -92,10 +105,10 @@ where to put it under `data/` (or under `$LT_DATA`). Simulations need no downloa
 | F3 | detect2 study, new tracker ALL, one cell | `scripts/reproduce_sim_detect2.sh CELL [PROCS]`, CELL ∈ 0..5 (primary cells 1 2 4 5); then `python code/detect2/aggregate_detect2.py` | `det2/<cell>/results.json`, `results/data/det2_aggregate.json` |
 | F3, pipeline check only | same cell with 2 000 test and 1 000 calibration shots, no CNN | `scripts/reproduce_sim_detect2.sh 1 12 --quick` | `det2/p0.002_hom_quick/`; too noisy to compare with F3 |
 | F4 | ibm_berlin memory null (old per-detector tracker) | `python code/ibm_memory/run_ibm.py memory_d5_q85/T50 100000 full 0.25 --controls --procs 12`, then `python code/ibm_memory/stats_ibm.py` | `results/ibm_results.md`, `results/data/ibm_stats.json` |
-| F4 | Google 2023 and Willow nulls | the scripts of these two analyses are not in this repository; the reports are `results/real_data_report.md`, `results/willow_scope_report.md`, `results/failure_analysis.md` | |
+| F4 | Google 2023 and Willow nulls | the scripts of these two analyses are not in this repository; the reports are `results/real_data_report.md`, `results/willow_scope_report.md`, `docs/working_notes/failure_analysis.md` | |
 | F5 | ibm_berlin stability, 17 runs | `scripts/reproduce_ibm_stability.sh [PROCS]` | `ibmstab/<run>/results.json`, `results/data/ibmstab_aggregate.json`, `figures/ibmstab_figure.png` |
-| F9 | null check of the label-free evidence (leak-free shots from the shipped model, same calibration) | `python code/ibm_stability/null_evidence.py --run T20 --seed 1 --procs 12` (needs `ibmstab/<run>/calib.json` from the F5 run) | `ibmstab/<run>/null_evidence_seed1.json`; summary `results/ibmstab/null_evidence_summary.md` |
-| F10 | adapter check: our plain MWPM against the MWPM numbers shipped by Lange et al., and the origin of the detection-fraction overshoot of the shipped p_ij model | see `results/ibmstab/mwpm_vs_lange.md` (numbers from `ibmstab/<run>/results.json` and the authors' `results/ibm_stability_d3.json`) | `results/ibmstab/mwpm_vs_lange.md` |
+| F5 | null check of the label-free evidence (leak-free shots from the shipped model, same calibration) | `python code/ibm_stability/null_evidence.py --run T20 --seed 1 --procs 12` (needs `ibmstab/<run>/calib.json` from the F5 run) | `ibmstab/<run>/null_evidence_seed1.json`; summary `results/ibmstab/null_evidence_summary.md` |
+| F5 | baseline check: our plain MWPM against the MWPM numbers shipped by Lange et al., and the origin of the detection-fraction overshoot of the shipped p_ij model | see `results/ibmstab/mwpm_vs_lange.md` (numbers from `ibmstab/<run>/results.json` and the authors' `results/ibm_stability_d3.json`) | `results/ibmstab/mwpm_vs_lange.md` |
 | F5, exploratory | stronger MWPM with decomposed mechanisms (A_dec, X_dec) | `python code/ibm_stability/robust_dec.py --run T100 --procs 12` | `ibmstab/<run>/fail_Adec.npy`, `fail_Xdec.npy` |
 | F6 | leak-free control, reset d = 5 memory | `python code/miami_v3/zero_leak_reset.py memory 2e-3 20000` | stdout (JSON) |
 | F6 | leak-free control, ibm_berlin-type stability circuit | `python code/miami_v3/zero_leak_reset.py stability 6e-3 20000 50` | stdout (JSON) |
@@ -107,8 +120,8 @@ where to put it under `data/` (or under `$LT_DATA`). Simulations need no downloa
 |---|---|---|
 | `figures/detect2_figure.png` | `python code/detect2/fig_detect2.py` | `results/data/det2_aggregate.json` |
 | `figures/ibmstab_figure.png` | `python code/ibm_stability/ibmstab_figdata.py && python code/ibm_stability/fig_ibmstab.py` | `ibmstab/*/`, `results/data/ibmstab_figdata.json` |
-| `g1_figure.png`, `fig1_model_and_grid.png`, `fig3_soft_vs_hard.png`, `oracle_map_figure.png`, `baselines_figure.png` | plotting scripts not in this repository | `results/data/g1_results.csv`, `g3_results.csv`, `final_cells.csv`, `control_baselines.csv` |
-| `fig4_latency_streaming.png`, `latency_figure.png` | not in this repository | latency numbers in `results/c3_paper_readiness_report.md` |
+| `g1_figure.png`, `fig1_model_and_grid.png`, `fig3_soft_vs_hard.png`, `oracle_map_figure.png`, `baselines_figure.png` | plotting scripts not in this repository | `results/data/g1_results.csv`, `g3_results.csv`, `final_cells.csv`, `control_baselines.csv`, `baselines_results.csv` (static baselines of the d = 5 centre cell; report `results/baselines_report.md`) |
+| `fig4_latency_streaming.png`, `latency_figure.png` | not in this repository | latency numbers in `docs/working_notes/c3_paper_readiness_report.md` |
 | `fig2_scope.png`, `fig5_real_data.png`, `real_data_figure.png`, `willow_detection_fraction.png` | not in this repository | `results/real_data_report.md`, `results/willow_scope_report.md` |
 | `ibm_results_figure.png` | not in this repository | `results/data/ibm_stats.json`, `ibm_ratio_table.json` |
 

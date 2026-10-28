@@ -20,7 +20,7 @@ All trackers give a probability π that each data qubit is leaked in each round.
 | ALL_glob | ALL with one global p_L instead of per-qubit p_L (het cells) | ablation |
 | ALL_lag2 | ALL using only rounds ≤ t + 2 (online, same lag as the CNN) | ablation |
 
-"Explaining away" (idea 2) means that the hidden state also includes the measurement-error bit of each neighbouring check. A detection pair caused by one measurement error (two flips in time on the same check) is then explained by that bit and not by leakage. Idea 4 (priors) means that p_L per qubit and the return probability are learned from unlabelled syndrome data by Baum to Welch (EM).
+"Explaining away" (idea 2) means that the hidden state also includes the measurement-error bit of each neighbouring check. A detection pair caused by one measurement error (two flips in time on the same check) is then explained by that bit and not by leakage. Idea 4 (priors) means that p_L per qubit and the return probability are learned from unlabelled syndrome data by Baum-Welch (EM).
 
 ## 3. Primary endpoints (pre-registered; 4 cells: p = 2e-3, 3e-3 × hom, het)
 

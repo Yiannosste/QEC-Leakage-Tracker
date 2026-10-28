@@ -1,7 +1,7 @@
 numpy>=1.26
 scipy>=1.11
-stim>=1.13
-pymatching>=2.2
+stim==1.16.0
+pymatching==2.4.0
 matplotlib>=3.8
 pandas>=2.1
 torch>=2.1          # CNN tracker only (CPU is enough)

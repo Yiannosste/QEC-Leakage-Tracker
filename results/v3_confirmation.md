@@ -16,7 +16,7 @@ Selected in development: **v3 = R + G2** (readout explaining away for no-reset c
 
 ## Diagnostic (not part of the selection): the ibm_berlin-type circuit
 ibm_berlin stability circuit, T = 50, uniform p = 6e-3, seed 7000:
-- N4 (no leakage): MWPM makes **0** failures in 20 000 shots, so there is nothing to harm.
+- N4 (no leakage): both MWPM and the tracker make **0** failures in 20 000 shots (0 / 0 discordant), so this case says nothing about harm.
 - H4 (2 data qubits with long-lived states, p_L = 3e-3, τ = 40): MWPM 0.0075 → tracker 0.0034 (114 / 34, p = 3e-11) without any guard; 0.0037 with v3 (R + G2; 109 / 35, p = 5e-10).
 
 **What this teaches.** In a stability experiment, logical failures come almost only from long-lived states, so the tracker has a large gain and little room for harm. This matches the ibm_berlin result. In memory experiments, the possible gain from leakage flags is smaller (oracle +4 % to +26 % here), and a few false alarms are enough to cancel it.
