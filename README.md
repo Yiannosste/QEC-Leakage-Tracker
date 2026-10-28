@@ -92,7 +92,7 @@ where to put it under `data/` (or under `$LT_DATA`). Simulations need no downloa
 ## How this was made
 
 The analysis code, the experiments and the drafts of every document in this repository (and of the paper)
-were produced with an AI assistant (Claude, Anthropic) under my direction. I set the questions, the protocols
+were produced with the help of an AI assistant (LLM) under my direction. I set the questions, the protocols
 and the rules, read the outputs, and checked the numbers that are quoted. I am responsible for the content.
 The files in `docs/working_notes/` are working notes from that process, kept for the record;
 `results/facts.md` supersedes them wherever they differ.
