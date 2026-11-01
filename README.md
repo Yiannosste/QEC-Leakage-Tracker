@@ -9,10 +9,9 @@ syndromes with Baum-Welch. The repository has the simulator, the tracker, every 
 looking at test data, every result (positive and null), the data behind the tables, and scripts that
 reproduce each result section.
 
-All numbers in this file are copied from `results/facts.md`. That file is the only source of numbers for
-the paper, the course report and this README.
+All numbers in this file are copied from `results/facts.md`. That file is the only source of numbers for the course report and this README.
 
-The paper that goes with this code will be on arXiv (link will be added here when it is posted). It quotes files from this repository by name: `results/facts.md` (every number), `protocols/` (the frozen protocols), the result reports in `results/`, `results/ibmstab/mwpm_vs_lange.md` and `docs/captions.md` (definitions of the figure variants). The paper source itself is not kept here, so it does not have to be updated with the code.
+The project quotes files from this repository by name: `results/facts.md` (every number), `protocols/` (the frozen protocols), the result reports in `results/`, `results/ibmstab/mwpm_vs_lange.md` and `docs/captions.md` (definitions of the figure variants). The paper source itself is not kept here, so it does not have to be updated with the code.
 ## Main result and what it does not show
 
 The main result is a pre-registered test on 17 unseen IBM `ibm_berlin` stability runs (facts.md F5,
